@@ -82,6 +82,27 @@ select option{background:#1a1730}
 .grid{overflow-x:auto;flex:1;scrollbar-color:rgba(255,255,255,.2) transparent}
 .grid canvas{display:block;cursor:pointer;touch-action:pan-x}
 .hint{color:var(--mute);font-size:13px;margin-top:10px;font-weight:300}
+.how{list-style:none;padding:0;margin:0 0 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.how li{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:rgba(139,92,246,.08);border:1px solid rgba(167,139,250,.18);font-size:15px;color:#e4e0f5}
+.how li i{flex:none;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:600}
+.strip{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;min-height:64px;max-height:150px;overflow-y:auto;padding:12px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid var(--line);margin:4px 0 14px}
+.strip .empty{color:var(--mute);font-weight:300;align-self:center;margin:auto}
+.chip{display:inline-flex;align-items:center;justify-content:center;height:34px;padding:0 10px;border-radius:10px;font-size:14px;font-weight:600;color:#0b0a14;transition:.12s;min-width:40px}
+.chip.on{outline:2px solid #fff;transform:translateY(-3px) scale(1.08);box-shadow:0 6px 18px rgba(255,255,255,.25)}
+.pianowrap{overflow-x:auto;padding-bottom:4px}
+.piano{position:relative;display:flex;height:190px;min-width:560px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.wk{flex:1;position:relative;margin:0 2px;border-radius:0 0 12px 12px;background:linear-gradient(#fafafa,#e7e5ef);cursor:pointer;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:12px;gap:6px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.08);transition:.08s}
+.wk b{color:#2a2640;font-size:14px;font-weight:600}
+.wk span{width:14px;height:14px;border-radius:50%}
+.wk.dn,.wk:active{background:linear-gradient(#ece9f7,#d9d4ea);box-shadow:inset 0 -2px 0 rgba(0,0,0,.1);transform:translateY(2px)}
+.bk{position:absolute;top:0;height:60%;border-radius:0 0 9px 9px;background:linear-gradient(#2e2a44,#100e1c);cursor:pointer;z-index:2;
+  display:flex;justify-content:center;align-items:flex-end;padding-bottom:8px;box-shadow:0 4px 10px rgba(0,0,0,.5)}
+.bk b{color:#b8b2d6;font-size:10px;font-weight:500}
+.bk.dn,.bk:active{background:linear-gradient(#3d3858,#1d1a2e)}
+.adv{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.adv summary{cursor:pointer;color:var(--mute);font-size:14px}
+@media (max-width:700px){.how{grid-template-columns:1fr}}
 .foot{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
 .drop{display:block;border:1.5px dashed rgba(255,255,255,.2);border-radius:20px;padding:34px 20px;text-align:center;cursor:pointer;transition:.2s;background:rgba(0,0,0,.15)}
 .drop:hover,.drop.over{border-color:var(--a2);background:rgba(236,72,153,.06)}
@@ -178,23 +199,37 @@ input[type=range]{accent-color:var(--a2);width:220px}
       <div class="seg lg mb" id="modo"><button data-m="0" data-t="modeMel"></button><button data-m="1" data-t="modeSong"></button></div>
 
       <div id="melBox">
+        <ol class="how">
+          <li><i>1</i><span data-t="how1"></span></li>
+          <li><i>2</i><span data-t="how2"></span></li>
+          <li><i>3</i><span data-t="how3"></span></li>
+        </ol>
         <div class="row">
-          <button class="btn pri" id="playMel"></button>
-          <button class="btn" id="ejemplo" data-t="example"></button>
+          <button class="btn pri" id="autoMel" data-t="autoMel"></button>
+          <button class="btn" id="playMel"></button>
+          <button class="btn" id="deshacer" data-t="undo"></button>
           <button class="btn ghost" id="borrar" data-t="clear"></button>
           <span class="sp"></span>
-          <span class="ctl"><span data-t="tempo"></span><button class="btn sq" id="bpmM">−</button><b id="bpm"></b><button class="btn sq" id="bpmP">+</button></span>
-          <span class="ctl"><span data-t="bars"></span><button class="btn sq" id="barM">−</button><b id="bars"></b><button class="btn sq" id="barP">+</button></span>
+          <button class="btn ghost" id="ejemplo" data-t="example"></button>
         </div>
-        <div class="row">
+        <div class="strip" id="strip"></div>
+        <div class="pianowrap"><div class="piano" id="piano"></div></div>
+        <div class="row" style="margin-top:16px">
           <span class="ctl" data-t="noteLen"></span>
           <div class="seg" id="largo"></div>
           <span class="sp"></span>
           <select id="inst" aria-label="instrument"></select>
           <select id="ritmo" aria-label="rhythm"></select>
+          <span class="ctl"><span data-t="tempo"></span><button class="btn sq" id="bpmM">−</button><b id="bpm"></b><button class="btn sq" id="bpmP">+</button></span>
         </div>
-        <div class="roll"><div class="keys" id="keys"></div><div class="grid" id="grid"><canvas id="cv"></canvas></div></div>
-        <p class="hint" data-t="hintRoll"></p>
+        <details class="adv">
+          <summary data-t="adv"></summary>
+          <div class="row" style="margin-top:12px">
+            <span class="ctl"><span data-t="bars"></span><button class="btn sq" id="barM">−</button><b id="bars"></b><button class="btn sq" id="barP">+</button></span>
+          </div>
+          <div class="roll"><div class="keys" id="keys"></div><div class="grid" id="grid"><canvas id="cv"></canvas></div></div>
+          <p class="hint" data-t="hintRoll"></p>
+        </details>
       </div>
 
       <div id="songBox" hidden>
@@ -289,7 +324,10 @@ const T = {
   h1:"Tu letra",d1:"Ponle nombre a tu canción y escribe la letra, una frase en cada línea.",songName:"Nombre de la canción",
   lyrics:"Letra",lyricsPh:"Escribe aquí tu canción…",next:"Siguiente →",defTitle:"Mi canción",
   h2:"Tu música",d2:"Crea tu propia melodía, o usa una canción que hayas descargado.",modeMel:"Hacer mi melodía",modeSong:"Usar una canción",
-  play:"▶  Tocar",stop:"■  Parar",example:"Ejemplo",clear:"Borrar todo",tempo:"Velocidad",bars:"Compases",noteLen:"Nota",
+  play:"▶  Tocar",stop:"■  Parar",example:"Ejemplo",clear:"Borrar todo",tempo:"Velocidad",bars:"Compases",noteLen:"Cada nota dura",
+  how1:"Toca las teclas del piano",how2:"Cada tecla añade una nota a tu canción",how3:"Pulsa ▶ Tocar para escucharla",
+  autoMel:"✨ Melodía automática",undo:"↶ Deshacer",stripEmpty:"Tu melodía aparecerá aquí. ¡Toca el piano o pulsa ✨ Melodía automática!",
+  adv:"Editor avanzado (cuadrícula)",autoDone:"¡Melodía creada para tu letra! Pulsa ✨ otra vez para otra distinta.",
   lens:["Corta","Normal","Larga","Muy larga"],insts:["Piano","Flauta","Synth"],rhythms:["Sin ritmo","Pop","Reggaetón","Rock"],
   hintRoll:"Toca la cuadrícula para poner una nota. Toca una nota para quitarla. Toca los nombres de la izquierda para oírlos.",
   dropT:"Elige una canción",dropS:"Búscala en internet, descárgala (MP3) y elígela aquí",key:"Tono",allNotes:"Todas las notas",major:"mayor",minor:"menor",auto:"auto",
@@ -308,7 +346,10 @@ const T = {
   h1:"Your lyrics",d1:"Give your song a name and write the lyrics, one line per phrase.",songName:"Song name",
   lyrics:"Lyrics",lyricsPh:"Write your song here…",next:"Next →",defTitle:"My song",
   h2:"Your music",d2:"Make your own melody, or use a song you downloaded.",modeMel:"Make my melody",modeSong:"Use a song",
-  play:"▶  Play",stop:"■  Stop",example:"Example",clear:"Clear all",tempo:"Tempo",bars:"Bars",noteLen:"Note",
+  play:"▶  Play",stop:"■  Stop",example:"Example",clear:"Clear all",tempo:"Tempo",bars:"Bars",noteLen:"Each note lasts",
+  how1:"Tap the piano keys",how2:"Each key adds a note to your song",how3:"Press ▶ Play to hear it",
+  autoMel:"✨ Auto melody",undo:"↶ Undo",stripEmpty:"Your melody shows up here. Tap the piano or press ✨ Auto melody!",
+  adv:"Advanced editor (grid)",autoDone:"Melody made for your lyrics! Press ✨ again for a different one.",
   lens:["Short","Normal","Long","Very long"],insts:["Piano","Flute","Synth"],rhythms:["No beat","Pop","Reggaeton","Rock"],
   hintRoll:"Tap the grid to add a note. Tap a note to remove it. Tap the names on the left to hear them.",
   dropT:"Choose a song",dropS:"Find it online, download it (MP3) and pick it here",key:"Key",allNotes:"All notes",major:"major",minor:"minor",auto:"auto",
@@ -435,7 +476,7 @@ function aplicarIdioma(){
   $("#inst").innerHTML = t("insts").map((x,i)=>`<option value="${i}">${x}</option>`).join(""); $("#inst").value = S.inst;
   $("#ritmo").innerHTML = t("rhythms").map((x,i)=>`<option value="${i}">${x}</option>`).join(""); $("#ritmo").value = S.ritmo;
   if(!S.titulo) $("#titulo").placeholder = t("defTitle");
-  pintarTeclas(); actualizar();
+  pintarTeclas(); pintarPiano(); pintarStrip(); actualizar();
 }
 function irA(n){
   if(ocupado) return; stopAll(); tab = n;
@@ -467,7 +508,69 @@ function pintarTeclas(){
   for(let r=0;r<ROWS;r++){ const m = MIDI_MAX - r, d = document.createElement("div");
     d.textContent = nomNota(m); if(negra(m)) d.className = "blk"; d.onclick = () => preview(m); $("#keys").appendChild(d); }
 }
+// colores por nota (Do rojo, Re naranja, Mi amarillo, Fa verde, Sol turquesa, La azul, Si morado)
+const COLORES = ["#f87171","#fb7f5c","#fb923c","#fbb040","#facc15","#4ade80","#34d3a0","#2dd4bf","#38bdf8","#60a5fa","#818cf8","#c084fc"];
+const color = m => COLORES[((m % 12) + 12) % 12];
+function pintarPiano(){
+  const p = $("#piano"); p.innerHTML = "";
+  const blancas = []; for(let m=MIDI_MIN;m<=MIDI_MAX;m++) if(!negra(m)) blancas.push(m);
+  const ancho = 100 / blancas.length;
+  blancas.forEach(m => { const k = document.createElement("div"); k.className = "wk";
+    k.innerHTML = `<span style="background:${color(m)}"></span><b>${NOTES[L][m % 12]}</b>`; tecla(k, m); p.appendChild(k); });
+  for(let m=MIDI_MIN;m<=MIDI_MAX;m++) if(negra(m)){
+    const i = blancas.indexOf(m - 1), k = document.createElement("div"); k.className = "bk";
+    k.style.left = ((i + 1)*ancho - ancho*0.32) + "%"; k.style.width = (ancho*0.64) + "%";
+    k.innerHTML = `<b>${NOTES[L][m % 12]}</b>`; tecla(k, m); p.appendChild(k); }
+}
+function tecla(el, m){
+  el.addEventListener("pointerdown", e => { e.preventDefault(); preview(m); el.classList.add("dn");
+    setTimeout(() => el.classList.remove("dn"), 150); agregarNota(m); });
+}
+const finMelodia = () => S.notas.reduce((a, n) => Math.max(a, n.s + n.l), 0);
+function agregarNota(m){
+  const s = finMelodia(), l = S.largo;
+  while(s + l > total() && S.compases < 64) S.compases++;
+  if(s + l > total()) return;
+  S.notas.push({s, l, m}); guardar(); dibujar(); actualizar();
+  const st = $("#strip"); st.scrollTop = st.scrollHeight;
+}
+function deshacer(){
+  if(!S.notas.length) return; stopAll();
+  let k = 0; S.notas.forEach((n, i) => { if(n.s > S.notas[k].s) k = i; });
+  S.notas.splice(k, 1); guardar(); dibujar(); actualizar();
+}
+let chipActivo = -1;
+function pintarStrip(){
+  const st = $("#strip"), orden = [...S.notas].sort((a, b) => a.s - b.s);
+  if(!orden.length){ st.innerHTML = `<span class="empty">${t("stripEmpty")}</span>`; return; }
+  st.innerHTML = orden.map((n, i) => `<span class="chip${i === chipActivo ? " on" : ""}" style="background:${color(n.m)};min-width:${26 + n.l*10}px">${NOTES[L][n.m % 12]}</span>`).join("");
+}
+// melodía automática: una nota por sílaba, cada frase de la letra dura 2 compases
+let autoSeed = 1;
+function silabas(linea){
+  let c = 0;
+  for(const w of linea.toLowerCase().match(/[a-záéíóúüñ']+/g) || []){ const g = w.match(/[aeiouáéíóúüy]+/g); c += Math.max(1, g ? g.length : 1); }
+  return c;
+}
+function melodiaAuto(){
+  stopAll();
+  const lineas = S.letra.split("\n").map(s => s.trim()).filter(Boolean).slice(0, 32);
+  const sil = lineas.length ? lineas.map(silabas) : [7, 7, 7, 7];
+  let r = (autoSeed++ * 7919) % 233280; const rnd = () => (r = (r*9301 + 49297) % 233280) / 233280;
+  const ESC = [60, 62, 64, 65, 67, 69, 71, 72, 74, 76], FIN = [67, 60, 64, 60];
+  S.notas = []; let idx = 2 + Math.floor(rnd()*3);
+  sil.forEach((n0, li) => {
+    const n = Math.max(2, Math.min(n0, 14)), corta = n > 7, ini = li*16; let s = ini;
+    for(let i=0;i<n;i++){
+      if(i === n - 1){ const m = FIN[li % 4]; S.notas.push({s, l:ini + 16 - s, m}); idx = ESC.indexOf(m); }
+      else { idx = Math.max(0, Math.min(ESC.length - 1, idx + [-2,-1,-1,0,1,1,2][Math.floor(rnd()*7)]));
+        const l = corta ? 1 : 2; S.notas.push({s, l, m:ESC[idx]}); s += l; }
+    }
+  });
+  S.compases = Math.max(4, sil.length*2); guardar(); dibujar(); actualizar(); toast(t("autoDone"));
+}
 function dibujar(){
+  pintarStrip();
   const dpr = window.devicePixelRatio || 1, W = total()*CW, H = ROWS*CH;
   if(cv.width !== W*dpr || cv.height !== H*dpr){ cv.width = W*dpr; cv.height = H*dpr; cv.style.width = W+"px"; cv.style.height = H+"px"; }
   g.setTransform(dpr,0,0,dpr,0,0);
@@ -478,8 +581,7 @@ function dibujar(){
   for(let r=0;r<=ROWS;r++){ g.fillStyle = "rgba(255,255,255,.03)"; g.fillRect(0, r*CH, W, 1); }
   for(const n of S.notas){
     const x = n.s*CW + 2, y = (MIDI_MAX-n.m)*CH + 2, w = n.l*CW - 4, h = CH - 4;
-    const gr = g.createLinearGradient(x, 0, x + w, 0); gr.addColorStop(0, "#8b5cf6"); gr.addColorStop(1, "#ec4899");
-    g.fillStyle = gr; g.beginPath(); g.roundRect ? g.roundRect(x, y, w, h, 5) : g.rect(x, y, w, h); g.fill();
+    g.fillStyle = color(n.m); g.beginPath(); g.roundRect ? g.roundRect(x, y, w, h, 5) : g.rect(x, y, w, h); g.fill();
   }
   if(cursor >= 0){ g.fillStyle = "#fcd34d"; g.fillRect(cursor*CW, 0, 2, H); }
 }
@@ -498,8 +600,10 @@ function tocarMelodia(){
   if(player && player.kind === "mel"){ stopAll(); return; }
   ac(); const {mel, rit} = renderPistas(largoCancion());
   for(let i=0;i<mel.length;i++) mel[i] += rit[i];
-  const p = playChannels([mel], () => { cursor = -1; dibujar(); actualizar(); }); p.kind = "mel"; actualizar();
-  const loop = () => { if(player !== p) return; cursor = playTime()/stepSec(); dibujar();
+  const orden = [...S.notas].sort((a, b) => a.s - b.s);
+  const p = playChannels([mel], () => { cursor = -1; chipActivo = -1; dibujar(); actualizar(); }); p.kind = "mel"; actualizar();
+  const loop = () => { if(player !== p) return; cursor = playTime()/stepSec();
+    chipActivo = orden.findIndex(n => cursor >= n.s && cursor < n.s + n.l); dibujar();
     const gr = $("#grid"), x = cursor*CW; if(x > gr.scrollLeft + gr.clientWidth - 60 || x < gr.scrollLeft) gr.scrollLeft = x - 60;
     requestAnimationFrame(loop); };
   loop();
@@ -763,6 +867,8 @@ document.querySelectorAll("#steps button").forEach(b => b.onclick = () => irA(+b
 document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => irA(+b.dataset.go));
 document.querySelectorAll("#modo button").forEach(b => b.onclick = () => { stopAll(); S.modo = +b.dataset.m; guardar(); actualizar(); if(S.modo === 0) dibujar(); });
 $("#playMel").onclick = tocarMelodia;
+$("#autoMel").onclick = melodiaAuto;
+$("#deshacer").onclick = deshacer;
 $("#ejemplo").onclick = () => { stopAll(); ejemplo(); };
 $("#borrar").onclick = () => { stopAll(); S.notas = []; guardar(); dibujar(); actualizar(); };
 const cambiar = (k, d, lo, hi) => { stopAll(); S[k] = Math.max(lo, Math.min(hi, S[k] + d)); S.notas = S.notas.filter(n => n.s < total()); guardar(); dibujar(); actualizar(); };
