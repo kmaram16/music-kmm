@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Music KMM</title>
+<meta name="description" content="Escribe tu letra, crea tu melodía o usa una canción, canta y Music KMM afina tu voz.">
+<meta name="theme-color" content="#0b0a14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%23ec4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M26 44a6 6 0 1 1-4-5.7V18l20-4v24a6 6 0 1 1-4-5.7V22l-12 2.4z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0a14; --card:rgba(255,255,255,.035); --card2:rgba(255,255,255,.06); --line:rgba(255,255,255,.09);
+  --text:#f4f2fb; --mute:#9d98b8; --a1:#8b5cf6; --a2:#ec4899; --gold:#fcd34d; --ok:#34d399; --rec:#f43f5e;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:
+    radial-gradient(1100px 600px at 0% -10%,rgba(124,58,237,.28),transparent 60%),
+    radial-gradient(900px 520px at 105% 0%,rgba(236,72,153,.18),transparent 55%),
+    radial-gradient(800px 500px at 50% 120%,rgba(56,189,248,.08),transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--text); font-family:Outfit,system-ui,-apple-system,Segoe UI,sans-serif; min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:22px 16px 60px}
+header{display:flex;align-items:center;gap:14px}
+.logo{width:46px;height:46px;border-radius:15px;flex:none;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 10px 34px rgba(139,92,246,.4)}
+.brand h1{margin:0;font-size:20px;font-weight:600;letter-spacing:.22em}
+.brand p{margin:2px 0 0;color:var(--mute);font-size:13px;font-weight:300}
+.lang{margin-left:auto}
+nav.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:26px 0 18px}
+.step{font:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;color:var(--mute);
+  display:flex;gap:10px;align-items:center;cursor:pointer;transition:.2s}
+.step:hover:not(:disabled){color:var(--text)}
+.step:disabled{cursor:default}
+.step .n{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:13px;flex:none}
+.step.on{color:var(--text);border-color:rgba(167,139,250,.55);background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(236,72,153,.1))}
+.step.on .n{background:linear-gradient(135deg,var(--a1),var(--a2));border-color:transparent;color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.35);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+section[hidden]{display:none}
+h2{margin:0 0 4px;font-size:26px;font-weight:600}
+.sub{margin:0 0 22px;color:var(--mute);font-weight:300}
+label.f{display:block;color:var(--mute);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 8px}
+input[type=text],textarea,select{width:100%;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:14px;color:var(--text);
+  font:inherit;font-size:18px;padding:13px 16px;outline:none;transition:.15s}
+textarea{min-height:300px;resize:vertical;line-height:1.7;font-size:20px;font-weight:300}
+input:focus,textarea:focus,select:focus{border-color:var(--a1);box-shadow:0 0 0 4px rgba(139,92,246,.18)}
+select{width:auto;font-size:15px;padding:9px 34px 9px 14px;appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+select option{background:#1a1730}
+.mb{margin-bottom:20px}
+.btn{font:inherit;font-weight:500;font-size:15px;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:12px;
+  padding:10px 16px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;text-decoration:none;white-space:nowrap}
+.btn:hover:not(:disabled){background:rgba(255,255,255,.11)}
+.btn.pri{background:linear-gradient(135deg,var(--a1),var(--a2));border-color:transparent;color:#fff;box-shadow:0 8px 26px rgba(236,72,153,.28)}
+.btn.pri:hover:not(:disabled){filter:brightness(1.1);background:linear-gradient(135deg,var(--a1),var(--a2))}
+.btn.big{font-size:17px;padding:14px 22px;border-radius:14px}
+.btn.ghost{background:none}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sq{width:36px;height:36px;padding:0;justify-content:center}
+.seg{display:inline-flex;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:13px;padding:3px;flex-wrap:wrap}
+.seg button{font:inherit;font-size:14px;color:var(--mute);background:none;border:0;border-radius:10px;padding:8px 14px;cursor:pointer;transition:.15s}
+.seg button.on{background:rgba(255,255,255,.12);color:var(--text)}
+.seg.lg button{font-size:16px;padding:11px 20px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.ctl{display:inline-flex;align-items:center;gap:8px;color:var(--mute);font-size:14px}
+.ctl b{color:var(--text);min-width:30px;text-align:center;font-weight:500}
+.sp{flex:1}
+.roll{display:flex;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0e0c1b;margin-top:6px}
+.keys{flex:none;width:54px;border-right:1px solid var(--line)}
+.keys div{height:20px;font-size:10.5px;color:var(--mute);text-align:right;padding-right:8px;line-height:20px;cursor:pointer;user-select:none}
+.keys div.blk{background:rgba(0,0,0,.35)}
+.keys div:hover{color:var(--text)}
+.grid{overflow-x:auto;flex:1;scrollbar-color:rgba(255,255,255,.2) transparent}
+.grid canvas{display:block;cursor:pointer;touch-action:pan-x}
+.hint{color:var(--mute);font-size:13px;margin-top:10px;font-weight:300}
+.foot{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+.drop{display:block;border:1.5px dashed rgba(255,255,255,.2);border-radius:20px;padding:34px 20px;text-align:center;cursor:pointer;transition:.2s;background:rgba(0,0,0,.15)}
+.drop:hover,.drop.over{border-color:var(--a2);background:rgba(236,72,153,.06)}
+.drop strong{display:block;font-size:19px;font-weight:500;margin:10px 0 4px}
+.drop span{color:var(--mute);font-weight:300}
+.drop input{display:none}
+.songcard{margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding:18px;border-radius:18px;background:var(--card2);border:1px solid var(--line)}
+.songcard .name{font-size:19px;font-weight:500;word-break:break-word}
+.songcard .meta{color:var(--mute);font-size:14px;margin-top:4px}
+.tips{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:10px}
+.tips li{display:flex;gap:12px;align-items:flex-start;color:#d9d5ec;font-weight:300}
+.tips li i{flex:none;width:26px;height:26px;border-radius:50%;background:rgba(139,92,246,.18);color:#c4b5fd;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:600}
+.reczone{display:grid;place-items:center;padding:26px 0 10px;gap:14px;text-align:center}
+.recbtn{width:150px;height:150px;border-radius:50%;border:0;cursor:pointer;color:#fff;font:600 15px Outfit,sans-serif;letter-spacing:.2em;
+  background:radial-gradient(circle at 35% 30%,#ff7a8f,var(--rec) 60%,#be123c);
+  box-shadow:0 0 0 10px rgba(244,63,94,.1),0 0 0 22px rgba(244,63,94,.05),0 24px 60px rgba(244,63,94,.35);transition:.2s}
+.recbtn:hover:not(:disabled){transform:scale(1.04)}
+.recbtn:disabled{filter:grayscale(1);opacity:.4;cursor:not-allowed}
+.warn{color:var(--gold);font-size:14px}
+.lat{display:flex;flex-wrap:wrap;gap:12px;align-items:center;color:var(--mute);font-size:14px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+input[type=range]{accent-color:var(--a2);width:220px}
+.bar{height:6px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a1),var(--a2))}
+.live{display:flex;flex-direction:column;gap:20px;min-height:420px}
+.livehead{display:flex;align-items:center;gap:10px;color:var(--rec);font-weight:600;letter-spacing:.18em;font-size:13px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--rec);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.count{font-size:140px;font-weight:700;text-align:center;line-height:1;background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:40px 0}
+.kara{text-align:center;display:grid;gap:12px;padding:20px 0}
+.kara .p{color:var(--mute);font-size:19px;font-weight:300;min-height:26px}
+.kara .c{font-size:clamp(28px,5vw,46px);font-weight:600;line-height:1.2;background:linear-gradient(90deg,#fff,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.kara .n{font-size:21px;font-weight:300;opacity:.8;min-height:28px}
+.notes{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.pill{padding:10px 18px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:15px;color:var(--mute)}
+.pill b{color:var(--text);font-weight:600;margin-left:6px}
+.pill.target b{color:var(--gold)}
+.center{text-align:center}
+.settings{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;margin:22px 0;padding:22px;border-radius:18px;background:rgba(0,0,0,.18);border:1px solid var(--line)}
+.set{display:flex;flex-direction:column;gap:8px;font-size:15px}
+.set .top{display:flex;justify-content:space-between;color:#d9d5ec}
+.set .top b{color:var(--text);font-weight:500}
+.set input[type=range]{width:100%}
+.sw{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:15px;color:#d9d5ec;user-select:none}
+.sw input{display:none}
+.sw span{width:44px;height:26px;border-radius:99px;background:rgba(255,255,255,.14);position:relative;transition:.2s;flex:none}
+.sw span:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+span{background:linear-gradient(135deg,var(--a1),var(--a2))}
+.sw input:checked+span:after{left:21px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;transition:.3s;pointer-events:none;
+  background:#1d1934;border:1px solid var(--line);padding:12px 20px;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.5);max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.win{margin-top:26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 22px;border-radius:20px;border:1px solid var(--line);background:var(--card)}
+.win .t{font-weight:500}
+.win .s{color:var(--mute);font-size:14px;font-weight:300}
+.credit{text-align:center;color:var(--mute);font-size:12px;margin-top:22px;letter-spacing:.12em;font-weight:300}
+@media (max-width:700px){
+  .card{padding:18px;border-radius:20px}
+  .step .lbl{display:none} .step{justify-content:center;padding:10px}
+  .settings{grid-template-columns:1fr}
+  h2{font-size:22px}
+  textarea{font-size:18px}
+  .count{font-size:110px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M9 18.5a3 3 0 1 1-2-2.83V5l12-2.5v13a3 3 0 1 1-2-2.83V7.1L9 8.7z"/></svg></div>
+    <div class="brand"><h1>MUSIC KMM</h1><p data-t="tagline"></p></div>
+    <div class="lang seg" id="lang"><button data-l="es">ES</button><button data-l="en">EN</button></div>
+  </header>
+
+  <nav class="steps" id="steps">
+    <button class="step" data-s="0"><span class="n">1</span><span class="lbl" data-t="s1"></span></button>
+    <button class="step" data-s="1"><span class="n">2</span><span class="lbl" data-t="s2"></span></button>
+    <button class="step" data-s="2"><span class="n">3</span><span class="lbl" data-t="s3"></span></button>
+    <button class="step" data-s="3"><span class="n">4</span><span class="lbl" data-t="s4"></span></button>
+  </nav>
+
+  <main class="card">
+    <!-- 1 LETRA -->
+    <section id="p0">
+      <h2 data-t="h1"></h2><p class="sub" data-t="d1"></p>
+      <div class="mb"><label class="f" for="titulo" data-t="songName"></label><input type="text" id="titulo" maxlength="80"></div>
+      <label class="f" for="letra" data-t="lyrics"></label>
+      <textarea id="letra" data-tp="lyricsPh"></textarea>
+      <div class="foot"><button class="btn pri big" data-go="1" data-t="next"></button></div>
+    </section>
+
+    <!-- 2 MÚSICA -->
+    <section id="p1" hidden>
+      <h2 data-t="h2"></h2><p class="sub" data-t="d2"></p>
+      <div class="seg lg mb" id="modo"><button data-m="0" data-t="modeMel"></button><button data-m="1" data-t="modeSong"></button></div>
+
+      <div id="melBox">
+        <div class="row">
+          <button class="btn pri" id="playMel"></button>
+          <button class="btn" id="ejemplo" data-t="example"></button>
+          <button class="btn ghost" id="borrar" data-t="clear"></button>
+          <span class="sp"></span>
+          <span class="ctl"><span data-t="tempo"></span><button class="btn sq" id="bpmM">−</button><b id="bpm"></b><button class="btn sq" id="bpmP">+</button></span>
+          <span class="ctl"><span data-t="bars"></span><button class="btn sq" id="barM">−</button><b id="bars"></b><button class="btn sq" id="barP">+</button></span>
+        </div>
+        <div class="row">
+          <span class="ctl" data-t="noteLen"></span>
+          <div class="seg" id="largo"></div>
+          <span class="sp"></span>
+          <select id="inst" aria-label="instrument"></select>
+          <select id="ritmo" aria-label="rhythm"></select>
+        </div>
+        <div class="roll"><div class="keys" id="keys"></div><div class="grid" id="grid"><canvas id="cv"></canvas></div></div>
+        <p class="hint" data-t="hintRoll"></p>
+      </div>
+
+      <div id="songBox" hidden>
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept="audio/*,.mp3,.wav,.ogg,.m4a">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3m0 0L7 8m5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
+          <strong data-t="dropT"></strong><span data-t="dropS"></span>
+        </label>
+        <div class="songcard" id="songCard" hidden>
+          <div style="flex:1;min-width:200px"><div class="name" id="songName"></div><div class="meta" id="songMeta"></div></div>
+          <span class="ctl"><span data-t="key"></span><button class="btn sq" id="keyM">‹</button><b id="keyName" style="min-width:150px"></b><button class="btn sq" id="keyP">›</button></span>
+          <button class="btn pri" id="playSong"></button>
+        </div>
+      </div>
+
+      <div class="foot"><button class="btn pri big" data-go="2" data-t="next"></button></div>
+    </section>
+
+    <!-- 3 GRABAR -->
+    <section id="p2" hidden>
+      <div id="recSetup">
+        <h2 data-t="h3"></h2><p class="sub" data-t="d3"></p>
+        <ul class="tips">
+          <li><i>1</i><span data-t="tip1"></span></li>
+          <li><i>2</i><span id="tip2"></span></li>
+          <li><i>3</i><span data-t="tip3"></span></li>
+        </ul>
+        <div class="reczone">
+          <button class="recbtn" id="recBtn" data-t="recBtn"></button>
+          <div class="warn" id="recWarn"></div>
+        </div>
+        <div class="lat"><span data-t="latency"></span><input type="range" id="lat" min="-100" max="400" step="10"><b id="latV"></b></div>
+      </div>
+      <div id="recLive" class="live" hidden>
+        <div class="livehead"><span class="dot"></span><span data-t="recording"></span><span class="sp"></span><button class="btn" id="stopRec" data-t="stop"></button></div>
+        <div class="bar"><i id="recBar"></i></div>
+        <div id="countIn" class="count" hidden></div>
+        <div id="karaoke" class="kara"><div class="p" id="kp"></div><div class="c" id="kc"></div><div class="n" id="kn"></div><div class="n" id="kn2"></div></div>
+        <div class="notes"><div class="pill target" id="pillT"><span data-t="sing"></span><b id="singNote">—</b></div><div class="pill"><span data-t="youSing"></span><b id="liveNote">—</b></div></div>
+      </div>
+      <div id="recProc" class="live center" hidden style="justify-content:center">
+        <h2 data-t="tuning"></h2>
+        <div class="bar" style="max-width:420px;width:100%;margin:10px auto"><i id="procBar"></i></div>
+      </div>
+    </section>
+
+    <!-- 4 ESCUCHAR -->
+    <section id="p3" hidden>
+      <div id="noRec" class="center" style="padding:60px 0">
+        <h2 data-t="needRec"></h2><p class="sub"></p>
+        <button class="btn pri big" data-go="2" data-t="goRec"></button>
+      </div>
+      <div id="hasRec" hidden>
+        <h2 data-t="h4"></h2><p class="sub" data-t="d4"></p>
+        <div class="row">
+          <button class="btn pri big" id="playAT" data-t="withAT"></button>
+          <button class="btn big" id="playRaw" data-t="withoutAT"></button>
+          <button class="btn big ghost" id="stopPlay" data-t="stop"></button>
+        </div>
+        <div class="bar"><i id="playBar"></i></div>
+        <div class="settings">
+          <div class="set"><div class="top"><span data-t="strength"></span><b id="fuerzaV"></b></div><input type="range" id="fuerza" min="0" max="100"></div>
+          <div class="set"><div class="top"><span data-t="volVoice"></span><b id="volVozV"></b></div><input type="range" id="volVoz" min="0" max="200"></div>
+          <label class="sw"><input type="checkbox" id="robot"><span></span><em style="font-style:normal" data-t="robot"></em></label>
+          <div class="set"><div class="top"><span data-t="volMusic"></span><b id="volMusV"></b></div><input type="range" id="volMus" min="0" max="150"></div>
+          <label class="sw"><input type="checkbox" id="eco"><span></span><em style="font-style:normal" data-t="echo"></em></label>
+          <label class="sw" id="inclMelW"><input type="checkbox" id="inclMel"><span></span><em style="font-style:normal" data-t="inclMel"></em></label>
+        </div>
+        <div class="row">
+          <button class="btn pri big" id="save" data-t="save"></button>
+          <span class="sp"></span>
+          <button class="btn big ghost" data-go="2" data-t="again"></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="win">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="#c4b5fd"><path d="M3 5.5 10 4.5v7H3zm8-1.2L21 3v8.5H11zM3 12.5h7v7l-7-1zm8 0h10V21l-10-1.4z"/></svg>
+    <div style="flex:1;min-width:180px"><div class="t" data-t="winT"></div><div class="s" data-t="winS"></div></div>
+    <a class="btn" href="https://github.com/kmaram16/music-kmm/releases/latest/download/MusicKMM_Windows.zip" data-t="winB"></a>
+  </div>
+  <p class="credit">KAMYAR STUDIOS</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+// ================= textos =================
+const T = {
+ es:{tagline:"Escribe, canta y afina tu propia canción",s1:"Letra",s2:"Música",s3:"Grabar",s4:"Escuchar",
+  h1:"Tu letra",d1:"Ponle nombre a tu canción y escribe la letra, una frase en cada línea.",songName:"Nombre de la canción",
+  lyrics:"Letra",lyricsPh:"Escribe aquí tu canción…",next:"Siguiente →",defTitle:"Mi canción",
+  h2:"Tu música",d2:"Crea tu propia melodía, o usa una canción que hayas descargado.",modeMel:"Hacer mi melodía",modeSong:"Usar una canción",
+  play:"▶  Tocar",stop:"■  Parar",example:"Ejemplo",clear:"Borrar todo",tempo:"Velocidad",bars:"Compases",noteLen:"Nota",
+  lens:["Corta","Normal","Larga","Muy larga"],insts:["Piano","Flauta","Synth"],rhythms:["Sin ritmo","Pop","Reggaetón","Rock"],
+  hintRoll:"Toca la cuadrícula para poner una nota. Toca una nota para quitarla. Toca los nombres de la izquierda para oírlos.",
+  dropT:"Elige una canción",dropS:"Búscala en internet, descárgala (MP3) y elígela aquí",key:"Tono",allNotes:"Todas las notas",major:"mayor",minor:"menor",auto:"auto",
+  loading:"Cargando canción…",badSong:"No pude leer esa canción. Prueba con otro archivo.",
+  h3:"¡A cantar!",d3:"Cuando pulses Grabar, canta encima de la música.",tip1:"Ponte auriculares para que el micrófono solo oiga tu voz.",
+  tip2mel:"Sonarán 4 clics (1, 2, 3, 4) y luego empieza tu melodía.",tip2song:"Empezará la canción que elegiste.",
+  tip3:"Al terminar, Music KMM afina tu voz automáticamente.",recBtn:"GRABAR",needMel:"Primero pon notas o un ritmo en el paso 2.",needSong:"Primero elige una canción en el paso 2.",
+  latency:"Ajuste de tiempo (si tu voz suena tarde, súbelo)",recording:"GRABANDO",sing:"Canta",youSing:"Estás cantando",noLyrics:"(No escribiste letra: ¡inventa!)",
+  tuning:"Afinando tu voz…",micErr:"No pude usar el micrófono. Revisa que el navegador tenga permiso.",noMic:"Este navegador no permite usar el micrófono.",
+  needRec:"Primero graba tu voz",goRec:"Ir a grabar",h4:"Tu canción",d4:"Escúchala, ajusta el sonido y guárdala.",
+  withAT:"▶  Con autotune",withoutAT:"Sin autotune",strength:"Fuerza del autotune",robot:"Efecto robot (autotune instantáneo)",echo:"Eco de estudio",
+  volVoice:"Volumen de tu voz",volMusic:"Volumen de la música",inclMel:"Tocar la melodía con el instrumento",save:"Guardar canción (.wav)",again:"Grabar otra vez",
+  saved:"¡Guardada! Mira tu carpeta de Descargas.",done:"¡Grabado! Escucha tu voz afinada.",
+  winT:"¿Tienes Windows?",winS:"Descarga la app Music KMM para tu ordenador.",winB:"Descargar para Windows"},
+ en:{tagline:"Write, sing and tune your own song",s1:"Lyrics",s2:"Music",s3:"Record",s4:"Listen",
+  h1:"Your lyrics",d1:"Give your song a name and write the lyrics, one line per phrase.",songName:"Song name",
+  lyrics:"Lyrics",lyricsPh:"Write your song here…",next:"Next →",defTitle:"My song",
+  h2:"Your music",d2:"Make your own melody, or use a song you downloaded.",modeMel:"Make my melody",modeSong:"Use a song",
+  play:"▶  Play",stop:"■  Stop",example:"Example",clear:"Clear all",tempo:"Tempo",bars:"Bars",noteLen:"Note",
+  lens:["Short","Normal","Long","Very long"],insts:["Piano","Flute","Synth"],rhythms:["No beat","Pop","Reggaeton","Rock"],
+  hintRoll:"Tap the grid to add a note. Tap a note to remove it. Tap the names on the left to hear them.",
+  dropT:"Choose a song",dropS:"Find it online, download it (MP3) and pick it here",key:"Key",allNotes:"All notes",major:"major",minor:"minor",auto:"auto",
+  loading:"Loading song…",badSong:"I couldn't read that song. Try another file.",
+  h3:"Let's sing!",d3:"When you press Record, sing along with the music.",tip1:"Wear headphones so the microphone only hears your voice.",
+  tip2mel:"You'll hear 4 clicks (1, 2, 3, 4), then your melody starts.",tip2song:"The song you chose will start.",
+  tip3:"When you finish, Music KMM tunes your voice automatically.",recBtn:"RECORD",needMel:"First add notes or a beat in step 2.",needSong:"First choose a song in step 2.",
+  latency:"Timing fix (if your voice sounds late, raise it)",recording:"RECORDING",sing:"Sing",youSing:"You're singing",noLyrics:"(No lyrics — make them up!)",
+  tuning:"Tuning your voice…",micErr:"I couldn't use the microphone. Check the browser permission.",noMic:"This browser can't use the microphone.",
+  needRec:"Record your voice first",goRec:"Go to record",h4:"Your song",d4:"Listen, adjust the sound and save it.",
+  withAT:"▶  With autotune",withoutAT:"Without autotune",strength:"Autotune strength",robot:"Robot effect (instant autotune)",echo:"Studio echo",
+  volVoice:"Voice volume",volMusic:"Music volume",inclMel:"Play the melody on the instrument",save:"Save song (.wav)",again:"Record again",
+  saved:"Saved! Check your Downloads folder.",done:"Recorded! Listen to your tuned voice.",
+  winT:"On Windows?",winS:"Download the Music KMM app for your computer.",winB:"Download for Windows"}
+};
+const NOTES = {es:["Do","Do#","Re","Re#","Mi","Fa","Fa#","Sol","Sol#","La","La#","Si"],en:["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]};
+const $ = s => document.querySelector(s);
+const store = {get(k,d){try{const v=localStorage.getItem("mkmm_"+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem("mkmm_"+k,JSON.stringify(v))}catch{}}};
+let L = store.get("lang", (navigator.language||"es").toLowerCase().startsWith("es") ? "es" : "en");
+const t = k => T[L][k] ?? k;
+
+// ================= estado =================
+const S = Object.assign({titulo:"",letra:"",notas:[],bpm:100,compases:8,largo:2,inst:0,ritmo:1,modo:0,lat:60}, store.get("song",{}));
+const guardar = () => store.set("song", S);
+const MIDI_MIN = 60, MIDI_MAX = 83, PASOS = 8, CW = 26, CH = 20, ROWS = MIDI_MAX - MIDI_MIN + 1;
+const total = () => S.compases * PASOS;
+const stepSec = () => 60 / S.bpm / 2;
+const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+const negra = m => [1,3,6,8,10].includes(((m % 12) + 12) % 12);
+const nomNota = m => NOTES[L][((m % 12) + 12) % 12] + (Math.floor(m / 12) - 1);
+const nomTono = k => k < 0 ? t("allNotes") : NOTES[L][k % 12] + " " + (k < 12 ? t("major") : t("minor"));
+let tab = 0, ocupado = false;
+
+function toast(msg){const e=$("#toast");e.textContent=msg;e.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove("on"),3500)}
+
+// ================= audio base =================
+let ctx = null, rate = 48000;
+function ac(){ if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();rate=ctx.sampleRate;} if(ctx.state==="suspended")ctx.resume(); return ctx; }
+let player = null;
+function playChannels(chs, onEnd){
+  stopAll(); const c = ac();
+  const b = c.createBuffer(chs.length, Math.max(1, chs[0].length), rate);
+  chs.forEach((d,i) => b.copyToChannel(d, i));
+  const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start();
+  const p = {src:s, t0:c.currentTime, dur:b.duration, onEnd};
+  s.onended = () => { if(player === p){ player = null; onEnd && onEnd(); } };
+  player = p; return p;
+}
+function playAudioBuffer(buf, onEnd){
+  stopAll(); const c = ac(); const s = c.createBufferSource(); s.buffer = buf; s.connect(c.destination); s.start();
+  const p = {src:s, t0:c.currentTime, dur:buf.duration, onEnd};
+  s.onended = () => { if(player === p){ player = null; onEnd && onEnd(); } };
+  player = p; return p;
+}
+function stopAll(){ if(player){ const p = player; player = null; try{p.src.stop()}catch{} p.onEnd && p.onEnd(); } }
+const playTime = () => player ? ac().currentTime - player.t0 : 0;
+
+// ================= sintetizador =================
+function addTono(b, start, len, midi, inst, vol){
+  const f = hz(midi), rel = Math.floor(0.08*rate), tot = len + rel; let ph = 0;
+  for(let i=0;i<tot;i++){
+    const k = start + i; if(k < 0) continue; if(k >= b.length) break;
+    const tt = i / rate; let s, env;
+    if(inst === 0){ env = Math.exp(-tt*3) * Math.min(1, i/(0.004*rate));
+      s = Math.sin(ph) + 0.5*Math.sin(2*ph)*Math.exp(-tt*2) + 0.25*Math.sin(3*ph)*Math.exp(-tt*5); ph += 2*Math.PI*f/rate; }
+    else if(inst === 1){ env = Math.min(1, i/(0.06*rate)); s = Math.sin(ph) + 0.12*Math.sin(2*ph);
+      ph += 2*Math.PI*f*(1 + 0.004*Math.sin(tt*2*Math.PI*5.5))/rate; }
+    else { env = Math.min(1, i/(0.01*rate)) * (0.7 + 0.3*Math.exp(-tt*4)); s = 0;
+      for(let h=1;h<=6;h++) s += Math.sin(h*ph)/h; s *= 0.6; ph += 2*Math.PI*f/rate; }
+    if(i >= len) env *= 1 - (i-len)/rel;
+    b[k] += s * env * vol;
+  }
+}
+function addBombo(b, st, vol){ const n=Math.floor(0.3*rate); let ph=0;
+  for(let i=0;i<n&&st+i<b.length;i++){ const tt=i/rate; ph+=2*Math.PI*(48+110*Math.exp(-tt*30))/rate; b[st+i]+=Math.sin(ph)*Math.exp(-tt*10)*vol; } }
+let seed = 7; const ruido = () => { seed = (seed*16807) % 2147483647; return seed/1073741823.5 - 1; };
+function addCaja(b, st, vol){ const n=Math.floor(0.2*rate);
+  for(let i=0;i<n&&st+i<b.length;i++){ const tt=i/rate; b[st+i]+=(ruido()*Math.exp(-tt*18)*0.7+Math.sin(2*Math.PI*185*tt)*Math.exp(-tt*25)*0.5)*vol; } }
+function addPlatillo(b, st, vol){ const n=Math.floor(0.06*rate); let prev=0;
+  for(let i=0;i<n&&st+i<b.length;i++){ const tt=i/rate, r=ruido(); b[st+i]+=(r-prev)*Math.exp(-tt*60)*vol; prev=r; } }
+function addBajo(b, st, len, midi, vol){ const f=hz(midi);
+  for(let i=0;i<len&&st+i<b.length;i++){ const tt=i/rate;
+    const env=Math.min(1,i/(0.005*rate))*Math.exp(-tt*2.5)*Math.min(1,(len-i)/(0.02*rate));
+    b[st+i]+=(Math.sin(2*Math.PI*f*tt)+0.3*Math.sin(4*Math.PI*f*tt))*env*vol; } }
+function addClic(b, st, fuerte){ const f=fuerte?2000:1400, n=Math.floor(0.05*rate);
+  for(let i=0;i<n&&st+i<b.length;i++){ const tt=i/rate; b[st+i]+=Math.sin(2*Math.PI*f*tt)*Math.exp(-tt*80)*0.6; } }
+
+const BOMBO=[[],[0,8,10],[0,4,8,12],[0,6,8]], CAJA=[[],[4,12],[3,6,11,14],[4,12]], PLAT=[[],[0,2,4,6,8,10,12,14],[2,10],[0,2,4,6,8,10,12,14]];
+const largoCancion = () => Math.floor(total()*stepSec()*rate) + rate;
+
+function renderPistas(len){
+  const sp = stepSec()*rate, mel = new Float32Array(len), rit = new Float32Array(len);
+  for(const n of S.notas) addTono(mel, Math.floor(n.s*sp), Math.floor(n.l*sp), n.m, S.inst, 0.35);
+  if(S.ritmo > 0){
+    let bajo = -1;
+    for(let b=0;b<S.compases;b++){
+      let menor = 999; for(const n of S.notas) if(Math.floor(n.s/PASOS) === b && n.m < menor) menor = n.m;
+      if(menor < 999){ bajo = menor; while(bajo > 47) bajo -= 12; }
+      for(let i=0;i<16;i++){ const pos = Math.floor((b*PASOS + i*0.5)*sp);
+        if(BOMBO[S.ritmo].includes(i)) addBombo(rit,pos,0.8);
+        if(CAJA[S.ritmo].includes(i)) addCaja(rit,pos,0.45);
+        if(PLAT[S.ritmo].includes(i)) addPlatillo(rit,pos,i%4===0?0.3:0.18); }
+      if(bajo > 0) for(let q=0;q<4;q++) addBajo(rit, Math.floor((b*PASOS+q*2)*sp), Math.floor(sp*1.8), bajo, 0.35);
+    }
+  }
+  return {mel, rit};
+}
+const previewCache = {};
+function preview(midi){
+  const c = ac(), key = S.inst*1000 + midi + "_" + rate;
+  if(!previewCache[key]){ const b = new Float32Array(Math.floor(0.6*rate)); addTono(b,0,Math.floor(0.4*rate),midi,S.inst,0.5);
+    const ab = c.createBuffer(1,b.length,rate); ab.copyToChannel(b,0); previewCache[key] = ab; }
+  const s = c.createBufferSource(); s.buffer = previewCache[key]; s.connect(c.destination); s.start();
+}
+
+// ================= idioma / pasos =================
+function aplicarIdioma(){
+  document.documentElement.lang = L;
+  document.querySelectorAll("[data-t]").forEach(e => e.textContent = t(e.dataset.t));
+  document.querySelectorAll("[data-tp]").forEach(e => e.placeholder = t(e.dataset.tp));
+  document.querySelectorAll("#lang button").forEach(b => b.classList.toggle("on", b.dataset.l === L));
+  $("#largo").innerHTML = ""; [1,2,4,8].forEach((v,i) => { const b = document.createElement("button"); b.textContent = t("lens")[i];
+    b.className = S.largo === v ? "on" : ""; b.onclick = () => { S.largo = v; guardar(); aplicarIdioma(); }; $("#largo").appendChild(b); });
+  $("#inst").innerHTML = t("insts").map((x,i)=>`<option value="${i}">${x}</option>`).join(""); $("#inst").value = S.inst;
+  $("#ritmo").innerHTML = t("rhythms").map((x,i)=>`<option value="${i}">${x}</option>`).join(""); $("#ritmo").value = S.ritmo;
+  if(!S.titulo) $("#titulo").placeholder = t("defTitle");
+  pintarTeclas(); actualizar();
+}
+function irA(n){
+  if(ocupado) return; stopAll(); tab = n;
+  for(let i=0;i<4;i++){ $("#p"+i).hidden = i !== n; $("#steps").children[i].classList.toggle("on", i === n); }
+  actualizar(); if(n === 1) dibujar(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function actualizar(){
+  $("#bpm").textContent = S.bpm; $("#bars").textContent = S.compases;
+  document.querySelectorAll("#modo button").forEach(b => b.classList.toggle("on", +b.dataset.m === S.modo));
+  $("#melBox").hidden = S.modo !== 0; $("#songBox").hidden = S.modo !== 1;
+  $("#playMel").textContent = player && player.kind === "mel" ? t("stop") : t("play");
+  $("#playSong").textContent = player && player.kind === "song" ? t("stop") : t("play");
+  if(musica){ $("#songCard").hidden = false; $("#songName").textContent = musicaNombre;
+    const d = musica.duration; $("#songMeta").textContent = Math.floor(d/60) + ":" + String(Math.floor(d%60)).padStart(2,"0");
+    $("#keyName").textContent = nomTono(tono) + (tono === tonoAuto ? " · " + t("auto") : ""); }
+  $("#tip2").textContent = S.modo === 0 ? t("tip2mel") : t("tip2song");
+  const listo = S.modo === 0 ? (S.notas.length > 0 || S.ritmo > 0) : !!musica;
+  $("#recBtn").disabled = !listo; $("#recWarn").textContent = listo ? "" : (S.modo === 0 ? t("needMel") : t("needSong"));
+  $("#lat").value = S.lat; $("#latV").textContent = S.lat + " ms";
+  $("#noRec").hidden = !!vozCruda; $("#hasRec").hidden = !vozCruda; $("#inclMelW").style.display = S.modo === 0 ? "" : "none";
+  document.querySelectorAll("#steps button").forEach(b => b.disabled = ocupado);
+}
+
+// ================= piano roll =================
+const cv = $("#cv"), g = cv.getContext("2d");
+let cursor = -1;
+function pintarTeclas(){
+  $("#keys").innerHTML = "";
+  for(let r=0;r<ROWS;r++){ const m = MIDI_MAX - r, d = document.createElement("div");
+    d.textContent = nomNota(m); if(negra(m)) d.className = "blk"; d.onclick = () => preview(m); $("#keys").appendChild(d); }
+}
+function dibujar(){
+  const dpr = window.devicePixelRatio || 1, W = total()*CW, H = ROWS*CH;
+  if(cv.width !== W*dpr || cv.height !== H*dpr){ cv.width = W*dpr; cv.height = H*dpr; cv.style.width = W+"px"; cv.style.height = H+"px"; }
+  g.setTransform(dpr,0,0,dpr,0,0);
+  for(let r=0;r<ROWS;r++){ g.fillStyle = negra(MIDI_MAX-r) ? "#0d0b19" : "#161328"; g.fillRect(0, r*CH, W, CH); }
+  for(let s=0;s<=total();s++){ const bar = s % PASOS === 0;
+    g.fillStyle = bar ? "rgba(255,255,255,.28)" : s % 2 === 0 ? "rgba(255,255,255,.08)" : "rgba(255,255,255,.035)";
+    g.fillRect(s*CW, 0, bar ? 1.5 : 1, H); }
+  for(let r=0;r<=ROWS;r++){ g.fillStyle = "rgba(255,255,255,.03)"; g.fillRect(0, r*CH, W, 1); }
+  for(const n of S.notas){
+    const x = n.s*CW + 2, y = (MIDI_MAX-n.m)*CH + 2, w = n.l*CW - 4, h = CH - 4;
+    const gr = g.createLinearGradient(x, 0, x + w, 0); gr.addColorStop(0, "#8b5cf6"); gr.addColorStop(1, "#ec4899");
+    g.fillStyle = gr; g.beginPath(); g.roundRect ? g.roundRect(x, y, w, h, 5) : g.rect(x, y, w, h); g.fill();
+  }
+  if(cursor >= 0){ g.fillStyle = "#fcd34d"; g.fillRect(cursor*CW, 0, 2, H); }
+}
+cv.addEventListener("pointerdown", e => {
+  if(e.button !== 0) return;
+  const r = cv.getBoundingClientRect(), paso = Math.floor((e.clientX - r.left)/CW), m = MIDI_MAX - Math.floor((e.clientY - r.top)/CH);
+  if(paso < 0 || paso >= total() || m < MIDI_MIN || m > MIDI_MAX) return;
+  const hit = S.notas.findIndex(n => n.m === m && paso >= n.s && paso < n.s + n.l);
+  if(hit >= 0) S.notas.splice(hit, 1);
+  else { const l = Math.min(S.largo, total() - paso);
+    S.notas = S.notas.filter(n => !(n.s < paso + l && n.s + n.l > paso)); // una nota a la vez (para cantar)
+    S.notas.push({s:paso, l, m}); preview(m); }
+  guardar(); dibujar(); actualizar();
+});
+function tocarMelodia(){
+  if(player && player.kind === "mel"){ stopAll(); return; }
+  ac(); const {mel, rit} = renderPistas(largoCancion());
+  for(let i=0;i<mel.length;i++) mel[i] += rit[i];
+  const p = playChannels([mel], () => { cursor = -1; dibujar(); actualizar(); }); p.kind = "mel"; actualizar();
+  const loop = () => { if(player !== p) return; cursor = playTime()/stepSec(); dibujar();
+    const gr = $("#grid"), x = cursor*CW; if(x > gr.scrollLeft + gr.clientWidth - 60 || x < gr.scrollLeft) gr.scrollLeft = x - 60;
+    requestAnimationFrame(loop); };
+  loop();
+}
+function ejemplo(){
+  const m=[60,60,67,67,69,69,67,65,65,64,64,62,62,60], l=[2,2,2,2,2,2,4,2,2,2,2,2,2,4];
+  S.notas = []; let s = 0; m.forEach((x,i) => { S.notas.push({s, l:l[i], m:x}); s += l[i]; });
+  if(S.compases < 4) S.compases = 4;
+  if(!S.letra.trim()){ S.letra = L === "es" ? "Estrellita, ¿dónde estás?\nMe pregunto qué serás" : "Twinkle, twinkle, little star\nHow I wonder what you are"; $("#letra").value = S.letra; }
+  guardar(); dibujar(); actualizar();
+}
+
+// ================= canción descargada =================
+let musica = null, musicaNombre = "", tono = -1, tonoAuto = -2;
+async function cargarArchivo(f){
+  if(!f) return; stopAll(); toast(t("loading"));
+  try{
+    const buf = await f.arrayBuffer();
+    const ab = await new Promise((ok, mal) => { const p = ac().decodeAudioData(buf, ok, mal); if(p && p.catch) p.catch(mal); });
+    musica = ab; musicaNombre = f.name.replace(/\.[^.]+$/, "");
+    await new Promise(r => setTimeout(r, 30));
+    tono = tonoAuto = detectarTono(ab);
+    toast("✓ " + musicaNombre + " · " + nomTono(tono));
+  }catch(err){ toast(t("badSong")); }
+  actualizar();
+}
+function detectarTono(ab){
+  const ch = ab.numberOfChannels, fr = ab.sampleRate, datos = []; for(let c=0;c<ch;c++) datos.push(ab.getChannelData(c));
+  const D = Math.max(1, Math.round(fr/11025)), sr = fr/D, N = 4096, largo = Math.floor(ab.length/D);
+  if(largo < N) return -1;
+  const x = new Float32Array(N), croma = new Float32Array(12), tramos = Math.min(150, Math.floor(largo/N));
+  for(let tr=0;tr<tramos;tr++){
+    const ini = Math.floor((largo - N) * tr / Math.max(1, tramos - 1));
+    for(let i=0;i<N;i++){ let s = 0; const b = (ini+i)*D; for(let d=0;d<D;d++) for(let c=0;c<ch;c++) s += datos[c][b+d]; x[i] = s/(D*ch); }
+    for(let m=40;m<=83;m++){ const coef = 2*Math.cos(2*Math.PI*hz(m)/sr); let s1=0, s2=0;
+      for(let i=0;i<N;i++){ const s0 = x[i] + coef*s1 - s2; s2 = s1; s1 = s0; }
+      croma[m%12] += Math.sqrt(Math.max(0, s1*s1 + s2*s2 - coef*s1*s2)); }
+  }
+  const may=[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88], men=[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
+  let mejor = -1, mejorR = -2;
+  for(let k=0;k<24;k++){ const p = k < 12 ? may : men, raiz = k % 12;
+    let mx=0, mp=0; for(let i=0;i<12;i++){ mx += croma[i]; mp += p[i]; } mx/=12; mp/=12;
+    let num=0, dx=0, dp=0; for(let i=0;i<12;i++){ const a = croma[(i+raiz)%12]-mx, b = p[i]-mp; num+=a*b; dx+=a*a; dp+=b*b; }
+    const r = num/Math.sqrt(dx*dp + 1e-9); if(r > mejorR){ mejorR = r; mejor = k; } }
+  return mejor;
+}
+
+// ================= detector de notas (YIN) =================
+let yinD = new Float32Array(512);
+function yin(x, off, W, tmin, tmax, sr){
+  if(yinD.length < tmax + 2) yinD = new Float32Array(tmax + 2);
+  yinD[0] = 1; let acum = 0;
+  for(let tau=1;tau<=tmax;tau++){ let s = 0; for(let j=0;j<W;j++){ const d = x[off+j] - x[off+j+tau]; s += d*d; }
+    acum += s; yinD[tau] = acum > 0 ? s*tau/acum : 1; }
+  let best = -1;
+  for(let tau=tmin;tau<tmax;tau++) if(yinD[tau] < 0.15){ while(tau+1 < tmax && yinD[tau+1] < yinD[tau]) tau++; best = tau; break; }
+  if(best < 1) return 0;
+  const a = yinD[best-1], b = yinD[best], c = yinD[best+1], den = a - 2*b + c;
+  const sh = Math.abs(den) > 1e-9 ? 0.5*(a-c)/den : 0;
+  return sr / (best + Math.max(-1, Math.min(1, sh)));
+}
+const decimF = () => Math.max(1, Math.round(rate/11025));
+function pitchRapido(buf){
+  const D = decimF(), sr = rate/D, n = Math.floor(buf.length/D), x = new Float32Array(n); let rms = 0;
+  for(let i=0;i<n;i++){ let s=0; for(let d=0;d<D;d++) s += buf[i*D+d]; x[i] = s/D; rms += x[i]*x[i]; }
+  if(Math.sqrt(rms/n) < 0.01) return 0;
+  const tmax = Math.floor(sr/70), W = Math.min(512, n - tmax - 1); if(W < 64) return 0;
+  return yin(x, 0, W, Math.floor(sr/1000), tmax, sr);
+}
+
+// ================= grabar =================
+let vozCruda = null, vozAfinada = null, f0 = null, ultFuerza = -1, ultRobot = false, pararPedido = false;
+const HOP = 128;
+async function grabar(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ toast(t("noMic")); return; }
+  stopAll(); const c = ac(); guardar();
+  let stream;
+  try{ stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}); }
+  catch(e){ toast(t("micErr")); return; }
+  let countIn = 0, largo, fondo;
+  if(S.modo === 0){
+    const sp = stepSec()*rate; countIn = Math.floor(PASOS*sp); largo = largoCancion();
+    const {mel, rit} = renderPistas(largo); const b = new Float32Array(countIn + largo);
+    for(let q=0;q<4;q++) addClic(b, Math.floor(q*2*sp), q === 0);
+    for(let i=0;i<largo;i++) b[countIn+i] = mel[i]*1.4 + rit[i]*0.8;
+    fondo = c.createBuffer(1, b.length, rate); fondo.copyToChannel(b, 0);
+  } else { fondo = musica; largo = Math.floor(musica.duration*rate); }
+  const countInSec = countIn/rate;
+
+  ocupado = true; pararPedido = false; actualizar();
+  $("#recSetup").hidden = true; $("#recLive").hidden = false;
+  const mic = c.createMediaStreamSource(stream), proc = c.createScriptProcessor(2048, 1, 1), mudo = c.createGain(); mudo.gain.value = 0;
+  const trozos = []; let tIni = null, total = 0; const ultimo = new Float32Array(4096);
+  proc.onaudioprocess = e => {
+    const d = e.inputBuffer.getChannelData(0);
+    if(tIni === null) tIni = c.currentTime - d.length/rate;
+    trozos.push(new Float32Array(d)); total += d.length;
+    ultimo.copyWithin(0, d.length); ultimo.set(d, ultimo.length - d.length);
+  };
+  mic.connect(proc); proc.connect(mudo); mudo.connect(c.destination);
+  while(tIni === null) await new Promise(r => setTimeout(r, 20));
+  const T0 = c.currentTime + 0.25;
+  const src = c.createBufferSource(); src.buffer = fondo; src.connect(c.destination); src.start(T0);
+  let fin = false; src.onended = () => fin = true;
+  const lineas = S.letra.split("\n").map(s => s.trim()).filter(Boolean);
+  await new Promise(done => {
+    const loop = () => {
+      const tt = c.currentTime - T0;
+      if(fin || pararPedido){ done(); return; }
+      $("#recBar").style.width = Math.max(0, Math.min(100, tt/fondo.duration*100)) + "%";
+      const enCuenta = tt < countInSec;
+      $("#countIn").hidden = !enCuenta; $("#karaoke").hidden = enCuenta;
+      if(enCuenta) $("#countIn").textContent = Math.max(1, Math.min(4, Math.floor(Math.max(0,tt)/(stepSec()*2)) + 1));
+      else {
+        const tc = tt - countInSec, dur = fondo.duration - countInSec;
+        if(!lineas.length){ $("#kp").textContent = ""; $("#kc").textContent = t("noLyrics"); $("#kn").textContent = $("#kn2").textContent = ""; }
+        else { const i = Math.max(0, Math.min(lineas.length-1, Math.floor(tc/Math.max(0.1,dur)*lineas.length)));
+          $("#kp").textContent = lineas[i-1] || ""; $("#kc").textContent = lineas[i]; $("#kn").textContent = lineas[i+1] || ""; $("#kn2").textContent = lineas[i+2] || ""; }
+        if(S.modo === 0){ const paso = Math.floor(tc/stepSec()), n = S.notas.find(x => paso >= x.s && paso < x.s + x.l);
+          $("#singNote").textContent = n ? nomNota(n.m) : "—"; $("#pillT").hidden = false; } else $("#pillT").hidden = true;
+      }
+      const f = pitchRapido(ultimo); $("#liveNote").textContent = f > 0 ? nomNota(Math.round(69 + 12*Math.log2(f/440))) : "—";
+      requestAnimationFrame(loop);
+    };
+    loop();
+  });
+  try{ src.stop(); }catch{}
+  mic.disconnect(); proc.disconnect(); mudo.disconnect(); stream.getTracks().forEach(tr => tr.stop());
+
+  const todo = new Float32Array(total); let o = 0; for(const tr of trozos){ todo.set(tr, o); o += tr.length; }
+  const outLat = (c.outputLatency || c.baseLatency || 0);
+  const ini = Math.round((T0 + outLat - tIni)*rate) + countIn + Math.round(S.lat/1000*rate);
+  vozCruda = new Float32Array(largo);
+  for(let i=0;i<largo;i++){ const k = ini + i; if(k >= 0 && k < todo.length) vozCruda[i] = todo[k]; }
+  normalizar(vozCruda);
+
+  $("#recLive").hidden = true; $("#recProc").hidden = false;
+  await detectarVoz();
+  ultFuerza = -1; vozAfinada = null;
+  $("#recProc").hidden = true; $("#recSetup").hidden = false;
+  ocupado = false; irA(3); toast(t("done"));
+}
+function normalizar(x){ let p = 0; for(const v of x) p = Math.max(p, Math.abs(v)); if(p < 1e-4) return; const g = 0.9/p; for(let i=0;i<x.length;i++) x[i] *= g; }
+
+async function detectarVoz(){
+  const D = decimF(), sr = rate/D, n = Math.floor(vozCruda.length/D), x = new Float32Array(n);
+  for(let i=0;i<n;i++){ let s=0; for(let d=0;d<D;d++) s += vozCruda[i*D+d]; x[i] = s/D; }
+  const W = 512, tmin = Math.floor(sr/1000), tmax = Math.floor(sr/70);
+  const frames = n - W - tmax > 0 ? Math.floor((n - W - tmax)/HOP) + 1 : 0;
+  f0 = new Float32Array(Math.max(1, frames)); const rms = new Float32Array(f0.length); let maxR = 0;
+  for(let k=0;k<frames;k++){ let s=0; const o=k*HOP; for(let j=0;j<W;j++) s += x[o+j]*x[o+j]; rms[k] = Math.sqrt(s/W); maxR = Math.max(maxR, rms[k]); }
+  for(let k=0;k<frames;k++){
+    f0[k] = rms[k] < Math.max(0.004, maxR*0.06) ? 0 : yin(x, k*HOP, W, tmin, tmax, sr);
+    if(k % 200 === 0){ $("#procBar").style.width = (k/frames*100) + "%"; await new Promise(r => setTimeout(r, 0)); }
+  }
+  const f = f0.slice(), v = [];
+  for(let k=0;k<frames;k++){ if(f[k] <= 0) continue; v.length = 0;
+    for(let j=Math.max(0,k-2);j<=Math.min(frames-1,k+2);j++) if(f[j] > 0) v.push(f[j]);
+    v.sort((a,b)=>a-b); f0[k] = v[v.length>>1]; }
+  let ini = -1;
+  for(let k=0;k<=frames;k++){ const vo = k < frames && f0[k] > 0;
+    if(vo && ini < 0) ini = k;
+    if(!vo && ini >= 0){ if(k - ini < 4) for(let j=ini;j<k;j++) f0[j] = 0; ini = -1; } }
+  $("#procBar").style.width = "100%";
+}
+
+// ================= autotune =================
+const MAYOR=[0,2,4,5,7,9,11], MENOR=[0,2,3,5,7,8,10];
+function ajustar(m, k){
+  if(k < 0) return Math.round(m);
+  const esc = k < 12 ? MAYOR : MENOR, raiz = k % 12; let mejor = Math.round(m), dist = 99;
+  for(let c=Math.round(m)-2;c<=Math.round(m)+2;c++){ const pc = (((c-raiz)%12)+12)%12;
+    if(!esc.includes(pc)) continue; if(Math.abs(c-m) < dist){ dist = Math.abs(c-m); mejor = c; } }
+  return mejor;
+}
+function objetivo(muestra, m){
+  if(S.modo === 0){ const paso = Math.floor(muestra/(stepSec()*rate));
+    for(const n of S.notas) if(paso >= n.s && paso < n.s + n.l) return n.m + 12*Math.round((m - n.m)/12);
+    return Math.round(m); }
+  return ajustar(m, tono);
+}
+function corregir(fuerza, robot){
+  const hopFull = HOP*decimF(), ratio = new Float32Array(f0.length); let sm = 1, prev = false; const alfa = robot ? 1 : 0.25;
+  for(let k=0;k<f0.length;k++){
+    if(f0[k] <= 0){ ratio[k] = 1; sm = 1; prev = false; continue; }
+    const m = 69 + 12*Math.log2(f0[k]/440), semis = (objetivo(k*hopFull, m) - m)*fuerza, want = Math.pow(2, semis/12);
+    sm = prev ? sm + (want - sm)*alfa : want; prev = true; ratio[k] = sm;
+  }
+  vozAfinada = psola(vozCruda, ratio, hopFull); ultFuerza = fuerza; ultRobot = robot;
+}
+// cambia la nota sin cambiar la velocidad (TD-PSOLA)
+function psola(x, ratio, hopFull){
+  const N = x.length, y = new Float32Array(N), ws = new Float32Array(N), marcas = [], per = [];
+  let tt = 0;
+  while(tt < N){ const k = Math.min(f0.length-1, Math.floor(tt/hopFull)); const p = f0[k] > 0 ? rate/f0[k] : rate/150;
+    marcas.push(Math.floor(tt)); per.push(Math.max(16, Math.floor(p))); tt += Math.max(16, p); }
+  let idx = 0, ts = 0;
+  while(ts < N){
+    while(idx+1 < marcas.length && Math.abs(marcas[idx+1]-ts) <= Math.abs(marcas[idx]-ts)) idx++;
+    const m = marcas[idx], P = per[idx], k = Math.min(f0.length-1, Math.floor(m/hopFull)), r = f0[k] > 0 ? ratio[k] : 1, c = Math.floor(ts);
+    for(let j=-P;j<=P;j++){ const si = m+j, di = c+j; if(si < 0 || si >= N || di < 0 || di >= N) continue;
+      const w = 0.5*(1 + Math.cos(Math.PI*j/P)); y[di] += x[si]*w; ws[di] += w; }
+    ts += P/r;
+  }
+  for(let i=0;i<N;i++) y[i] /= Math.max(ws[i], 0.5);
+  return y;
+}
+
+// ================= eco y mezcla =================
+function eco(x){
+  const esc = rate/44100, y = new Float32Array(x.length);
+  for(const d0 of [1116,1188,1277,1356]){ const d = Math.max(1, Math.floor(d0*esc)), b = new Float32Array(d); let p = 0, filt = 0;
+    for(let i=0;i<x.length;i++){ const o = b[p]; filt = o*0.8 + filt*0.2; b[p] = x[i] + filt*0.84; y[i] += o*0.25; if(++p >= d) p = 0; } }
+  for(const d0 of [556,441]){ const d = Math.max(1, Math.floor(d0*esc)), b = new Float32Array(d); let p = 0;
+    for(let i=0;i<y.length;i++){ const bo = b[p], inp = y[i]; y[i] = -inp + bo; b[p] = inp + bo*0.5; if(++p >= d) p = 0; } }
+  return y;
+}
+function ajustes(){ return {fuerza:+$("#fuerza").value/100, robot:$("#robot").checked, eco:$("#eco").checked,
+  volVoz:+$("#volVoz").value/100, volMus:+$("#volMus").value/100, inclMel:$("#inclMel").checked}; }
+function mezclar(afinada){
+  const a = ajustes();
+  if(afinada && (a.fuerza !== ultFuerza || a.robot !== ultRobot || !vozAfinada)) corregir(a.fuerza, a.robot);
+  const voz = afinada ? vozAfinada : vozCruda, N = voz.length, ef = a.eco ? eco(voz) : null;
+  const Lc = new Float32Array(N), Rc = new Float32Array(N);
+  let mel = null, rit = null, mL = null, mR = null;
+  if(S.modo === 0) ({mel, rit} = renderPistas(N));
+  else if(musica){ mL = musica.getChannelData(0); mR = musica.numberOfChannels > 1 ? musica.getChannelData(1) : mL; }
+  for(let i=0;i<N;i++){
+    const v = (voz[i] + (ef ? ef[i]*0.35 : 0))*a.volVoz*0.8;
+    let l = 0, r = 0;
+    if(mel){ l = r = ((a.inclMel ? mel[i] : 0) + rit[i]*0.8)*a.volMus*1.4; }
+    else if(mL && i < mL.length){ l = mL[i]*a.volMus; r = mR[i]*a.volMus; }
+    Lc[i] = l + v; Rc[i] = r + v;
+  }
+  let p = 0; for(let i=0;i<N;i++) p = Math.max(p, Math.abs(Lc[i]), Math.abs(Rc[i]));
+  if(p > 0.98){ const gg = 0.98/p; for(let i=0;i<N;i++){ Lc[i] *= gg; Rc[i] *= gg; } }
+  return [Lc, Rc];
+}
+function escuchar(afinada){
+  const p = playChannels(mezclar(afinada), () => { $("#playBar").style.width = "0"; }); p.kind = "res";
+  const loop = () => { if(player !== p) return; $("#playBar").style.width = (playTime()/p.dur*100) + "%"; requestAnimationFrame(loop); }; loop();
+}
+function guardarWav(){
+  const [l, r] = mezclar(true), n = l.length, buf = new ArrayBuffer(44 + n*4), dv = new DataView(buf);
+  const w = (o, s) => { for(let i=0;i<s.length;i++) dv.setUint8(o+i, s.charCodeAt(i)); };
+  w(0,"RIFF"); dv.setUint32(4, 36 + n*4, true); w(8,"WAVE"); w(12,"fmt "); dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,2,true);
+  dv.setUint32(24,rate,true); dv.setUint32(28,rate*4,true); dv.setUint16(32,4,true); dv.setUint16(34,16,true); w(36,"data"); dv.setUint32(40,n*4,true);
+  let o = 44; for(let i=0;i<n;i++){ dv.setInt16(o, Math.max(-1,Math.min(1,l[i]))*32767, true); dv.setInt16(o+2, Math.max(-1,Math.min(1,r[i]))*32767, true); o += 4; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([buf], {type:"audio/wav"}));
+  a.download = ((S.titulo || t("defTitle")).replace(/[\\/:*?"<>|]/g, "_")) + ".wav";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast(t("saved"));
+}
+
+// ================= eventos =================
+$("#titulo").value = S.titulo; $("#letra").value = S.letra;
+$("#titulo").oninput = e => { S.titulo = e.target.value; guardar(); };
+$("#letra").oninput = e => { S.letra = e.target.value; guardar(); };
+document.querySelectorAll("#lang button").forEach(b => b.onclick = () => { L = b.dataset.l; store.set("lang", L); aplicarIdioma(); });
+document.querySelectorAll("#steps button").forEach(b => b.onclick = () => irA(+b.dataset.s));
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => irA(+b.dataset.go));
+document.querySelectorAll("#modo button").forEach(b => b.onclick = () => { stopAll(); S.modo = +b.dataset.m; guardar(); actualizar(); if(S.modo === 0) dibujar(); });
+$("#playMel").onclick = tocarMelodia;
+$("#ejemplo").onclick = () => { stopAll(); ejemplo(); };
+$("#borrar").onclick = () => { stopAll(); S.notas = []; guardar(); dibujar(); actualizar(); };
+const cambiar = (k, d, lo, hi) => { stopAll(); S[k] = Math.max(lo, Math.min(hi, S[k] + d)); S.notas = S.notas.filter(n => n.s < total()); guardar(); dibujar(); actualizar(); };
+$("#bpmM").onclick = () => cambiar("bpm", -5, 60, 180); $("#bpmP").onclick = () => cambiar("bpm", 5, 60, 180);
+$("#barM").onclick = () => cambiar("compases", -1, 1, 64); $("#barP").onclick = () => cambiar("compases", 1, 1, 64);
+$("#inst").onchange = e => { stopAll(); S.inst = +e.target.value; guardar(); };
+$("#ritmo").onchange = e => { stopAll(); S.ritmo = +e.target.value; guardar(); actualizar(); };
+$("#file").onchange = e => cargarArchivo(e.target.files[0]);
+const drop = $("#drop");
+drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("over"); cargarArchivo(e.dataTransfer.files[0]); });
+$("#keyM").onclick = () => { tono = tono <= -1 ? 23 : tono - 1; actualizar(); };
+$("#keyP").onclick = () => { tono = tono >= 23 ? -1 : tono + 1; actualizar(); };
+$("#playSong").onclick = () => { if(player && player.kind === "song"){ stopAll(); return; } const p = playAudioBuffer(musica, actualizar); p.kind = "song"; actualizar(); };
+$("#recBtn").onclick = grabar;
+$("#stopRec").onclick = () => pararPedido = true;
+$("#lat").oninput = e => { S.lat = +e.target.value; $("#latV").textContent = S.lat + " ms"; guardar(); };
+$("#playAT").onclick = () => escuchar(true);
+$("#playRaw").onclick = () => escuchar(false);
+$("#stopPlay").onclick = stopAll;
+$("#save").onclick = guardarWav;
+const prefs = store.get("mix", {fuerza:100, volVoz:100, volMus:70, robot:false, eco:true, inclMel:true});
+for(const k of ["fuerza","volVoz","volMus"]){ const el = $("#"+k); el.value = prefs[k];
+  const show = () => $("#"+k+"V").textContent = el.value + "%"; show();
+  el.oninput = () => { show(); prefs[k] = +el.value; store.set("mix", prefs); }; }
+for(const k of ["robot","eco","inclMel"]){ const el = $("#"+k); el.checked = prefs[k]; el.onchange = () => { prefs[k] = el.checked; store.set("mix", prefs); }; }
+
+aplicarIdioma(); irA(0);
+</script>
+</body>
+</html>
